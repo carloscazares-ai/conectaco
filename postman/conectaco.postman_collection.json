@@ -1,0 +1,65 @@
+{
+  "info": {
+    "name": "conectaco",
+    "description": "Pruebas de los endpoints de conectaco. Requiere la app corriendo en localhost:8080.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" }
+  ],
+  "item": [
+    {
+      "name": "GET hola",
+      "request": { "method": "GET", "url": "{{baseUrl}}/test/hola" },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Status 200', () => pm.response.to.have.status(200));",
+        "pm.test('Responde hola', () => pm.expect(pm.response.text()).to.eql('hola desde springboot'));"
+      ] } }]
+    },
+    {
+      "name": "GET carlos",
+      "request": { "method": "GET", "url": "{{baseUrl}}/test/carlos" },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Status 200', () => pm.response.to.have.status(200));",
+        "pm.test('Responde Carlos', () => pm.expect(pm.response.text()).to.eql('Hola desde el endpoint de Carlos'));"
+      ] } }]
+    },
+    {
+      "name": "POST usuario turista",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/v1/usuarios",
+        "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Carlos\",\n  \"email\": \"carlos{{$timestamp}}@test.com\",\n  \"password\": \"1234\",\n  \"tipoUsuario\": \"Turista\"\n}" }
+      },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Status 200', () => pm.response.to.have.status(200));",
+        "const u = pm.response.json();",
+        "pm.test('Se genero el id', () => pm.expect(u.idUsuario).to.be.a('number'));",
+        "pm.test('Se guardo la fecha de registro', () => pm.expect(u.fechaRegistro).to.be.a('string'));",
+        "pm.test('Tipo Turista', () => pm.expect(u.tipoUsuario).to.eql('Turista'));"
+      ] } }]
+    },
+    {
+      "name": "POST usuario negocio",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/v1/usuarios",
+        "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Tacos El Guero\",\n  \"email\": \"negocio{{$timestamp}}@test.com\",\n  \"password\": \"abcd\",\n  \"tipoUsuario\": \"Negocio\"\n}" }
+      },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Status 200', () => pm.response.to.have.status(200));",
+        "pm.test('Tipo Negocio', () => pm.expect(pm.response.json().tipoUsuario).to.eql('Negocio'));"
+      ] } }]
+    },
+    {
+      "name": "GET usuarios",
+      "request": { "method": "GET", "url": "{{baseUrl}}/v1/usuarios" },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Status 200', () => pm.response.to.have.status(200));",
+        "pm.test('Regresa una lista con usuarios', () => pm.expect(pm.response.json()).to.be.an('array').that.is.not.empty);"
+      ] } }]
+    }
+  ]
+}

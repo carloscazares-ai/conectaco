@@ -18,13 +18,14 @@ USE `conectaco` ;
 -- Table `conectaco`.`Usuarios`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `conectaco`.`Usuarios` (
-  `id_usuario` INT NOT NULL,
+  `id_usuario` INT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(45) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
-  `password` VARCHAR(45) NOT NULL,
+  `password` VARCHAR(100) NOT NULL,
   `tipo_usuario` ENUM('Turista', 'Negocio') NOT NULL,
   `fecha_registro` DATE NOT NULL,
-  PRIMARY KEY (`id_usuario`))
+  PRIMARY KEY (`id_usuario`),
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE)
 ENGINE = InnoDB;
 
 
@@ -32,7 +33,7 @@ ENGINE = InnoDB;
 -- Table `conectaco`.`Turistas`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `conectaco`.`Turistas` (
-  `id_turista` INT NOT NULL,
+  `id_turista` INT NOT NULL AUTO_INCREMENT,
   `Idioma_preferido` VARCHAR(45) NOT NULL,
   `nivel` INT NOT NULL,
   `puntos_experiencia` INT NOT NULL,
@@ -51,7 +52,7 @@ ENGINE = InnoDB;
 -- Table `conectaco`.`Negocios`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `conectaco`.`Negocios` (
-  `id_negocio` INT NOT NULL,
+  `id_negocio` INT NOT NULL AUTO_INCREMENT,
   `rfc` VARCHAR(45) NULL,
   `telefono` VARCHAR(45) NULL,
   `estado_verificación` ENUM('PENDIENTE', 'APROBADO', 'RECHAZADO') NULL,
@@ -70,7 +71,7 @@ ENGINE = InnoDB;
 -- Table `conectaco`.`Categoria`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `conectaco`.`Categoria` (
-  `id_categoria` INT NOT NULL,
+  `id_categoria` INT NOT NULL AUTO_INCREMENT,
   `nombre_categoria` VARCHAR(100) NULL,
   PRIMARY KEY (`id_categoria`))
 ENGINE = InnoDB;
@@ -80,7 +81,7 @@ ENGINE = InnoDB;
 -- Table `conectaco`.`Lugar`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `conectaco`.`Lugar` (
-  `id_lugar` INT NOT NULL,
+  `id_lugar` INT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(45) NOT NULL,
   `descripcion` VARCHAR(500) NOT NULL,
   `direccion` VARCHAR(100) NOT NULL,
@@ -111,7 +112,7 @@ ENGINE = InnoDB;
 -- Table `conectaco`.`Recuerdo`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `conectaco`.`Recuerdo` (
-  `id_recuerdo` INT NOT NULL,
+  `id_recuerdo` INT NOT NULL AUTO_INCREMENT,
   `titulo` VARCHAR(45) NOT NULL,
   `reseña` VARCHAR(500) NOT NULL,
   `fecha` DATE NOT NULL,
@@ -139,7 +140,7 @@ ENGINE = InnoDB;
 -- Table `conectaco`.`Foto`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `conectaco`.`Foto` (
-  `id_foto` INT NOT NULL,
+  `id_foto` INT NOT NULL AUTO_INCREMENT,
   `url` VARCHAR(100) NOT NULL,
   `fk_id_recuerdo` INT NOT NULL,
   PRIMARY KEY (`id_foto`),
@@ -156,7 +157,7 @@ ENGINE = InnoDB;
 -- Table `conectaco`.`Mascota`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `conectaco`.`Mascota` (
-  `id_mascota` INT NOT NULL,
+  `id_mascota` INT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(45) NOT NULL,
   `nivel` INT NOT NULL,
   `experiencia` INT NOT NULL,
@@ -175,7 +176,7 @@ ENGINE = InnoDB;
 -- Table `conectaco`.`Misiones`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `conectaco`.`Misiones` (
-  `id_mision` INT NOT NULL,
+  `id_mision` INT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(45) NOT NULL,
   `descripción` VARCHAR(45) NOT NULL,
   `tipo` VARCHAR(45) NOT NULL,
@@ -196,7 +197,7 @@ ENGINE = InnoDB;
 -- Table `conectaco`.`Recompensa`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `conectaco`.`Recompensa` (
-  `id_recompensa` INT NOT NULL,
+  `id_recompensa` INT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(45) NOT NULL,
   `tipo` VARCHAR(45) NOT NULL,
   `descripcon` VARCHAR(500) NOT NULL,
@@ -210,7 +211,7 @@ ENGINE = InnoDB;
 -- Table `conectaco`.`Test`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `conectaco`.`Test` (
-  `id_test` INT NOT NULL,
+  `id_test` INT NOT NULL AUTO_INCREMENT,
   `pregunta` VARCHAR(100) NOT NULL,
   `respuesta` ENUM('Me gusta', 'No me gusta', 'Me da igual') NOT NULL,
   `fk_id_usuario` INT NOT NULL,
@@ -228,7 +229,7 @@ ENGINE = InnoDB;
 -- Table `conectaco`.`Inventario_turista`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `conectaco`.`Inventario_turista` (
-  `id_inventario` INT NOT NULL,
+  `id_inventario` INT NOT NULL AUTO_INCREMENT,
   `fecha_canje` DATE NOT NULL,
   `estado` ENUM('DISPONIBLE', 'USADO', 'EXPIRADO') NOT NULL,
   `fk_id_turista` INT NOT NULL,
@@ -253,7 +254,7 @@ ENGINE = InnoDB;
 -- Table `conectaco`.`Progreso_mision`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `conectaco`.`Progreso_mision` (
-  `id_progreso_mision` INT NOT NULL,
+  `id_progreso_mision` INT NOT NULL AUTO_INCREMENT,
   `fk_id_mision` INT NOT NULL,
   `fk_id_turista` INT NOT NULL,
   `estado` ENUM('PENDIENTE', 'EN_PROGRESO', 'COMPLETADA') NOT NULL,
