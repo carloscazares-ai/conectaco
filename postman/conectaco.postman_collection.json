@@ -38,7 +38,7 @@
         "method": "POST",
         "header": [{ "key": "Content-Type", "value": "application/json" }],
         "url": "{{baseUrl}}/v1/usuarios",
-        "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Carlos\",\n  \"email\": \"carlos{{$timestamp}}@test.com\",\n  \"password\": \"1234\",\n  \"tipoUsuario\": \"Turista\"\n}" }
+        "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Carlos\",\n  \"email\": \"carlos{{$timestamp}}@test.com\",\n  \"password\": \"Conectaco#2026\",\n  \"tipoUsuario\": \"Turista\"\n}" }
       },
       "event": [{ "listen": "test", "script": { "exec": [
         "pm.test('Status 200', () => pm.response.to.have.status(200));",
@@ -54,7 +54,7 @@
         "method": "POST",
         "header": [{ "key": "Content-Type", "value": "application/json" }],
         "url": "{{baseUrl}}/v1/usuarios",
-        "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Tacos El Guero\",\n  \"email\": \"negocio{{$timestamp}}@test.com\",\n  \"password\": \"abcd\",\n  \"tipoUsuario\": \"Negocio\"\n}" }
+        "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Tacos El Guero\",\n  \"email\": \"negocio{{$timestamp}}@test.com\",\n  \"password\": \"TacosGuero$1\",\n  \"tipoUsuario\": \"Negocio\"\n}" }
       },
       "event": [{ "listen": "test", "script": { "exec": [
         "pm.test('Status 200', () => pm.response.to.have.status(200));",
@@ -67,6 +67,19 @@
       "event": [{ "listen": "test", "script": { "exec": [
         "pm.test('Status 200', () => pm.response.to.have.status(200));",
         "pm.test('Regresa una lista con usuarios', () => pm.expect(pm.response.json()).to.be.an('array').that.is.not.empty);"
+      ] } }]
+    },
+    {
+      "name": "POST contraseña débil (debe fallar)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/v1/usuarios",
+        "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Débil\",\n  \"email\": \"debil{{$timestamp}}@test.com\",\n  \"password\": \"1234\",\n  \"tipoUsuario\": \"Turista\"\n}" }
+      },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Status 400', () => pm.response.to.have.status(400));",
+        "pm.test('Explica qué le falta a la contraseña', () => pm.expect(pm.response.json().error).to.include('mayuscula'));"
       ] } }]
     },
     {

@@ -6,11 +6,14 @@ import com.conectaco.conectaco.entity.TuristaEntity;
 import com.conectaco.conectaco.entity.UsuarioEntity;
 import com.conectaco.conectaco.enums.EstadoVerificacion;
 import com.conectaco.conectaco.enums.TipoUsuario;
+import com.conectaco.conectaco.exception.ApiException;
 import com.conectaco.conectaco.mapper.UsuarioMapper;
 import com.conectaco.conectaco.repository.NegocioRepository;
 import com.conectaco.conectaco.repository.TuristaRepository;
 import com.conectaco.conectaco.repository.UsuarioRepository;
 import com.conectaco.conectaco.service.UsuarioService;
+import com.conectaco.conectaco.util.ValidadorPassword;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +42,8 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     @Transactional
     public UsuarioDTO save(UsuarioDTO usuarioDTO) {
+
+        validar(usuarioDTO);
 
         UsuarioEntity usuarioEntity = usuarioMapper.toUsuarioEntity(usuarioDTO);
         usuarioEntity = usuarioRepository.save(usuarioEntity);
@@ -71,5 +76,27 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
 
         return usuarioDTOs;
+    }
+
+    // Revisa los datos antes de guardar; si algo esta mal responde 400 o 409 con el motivo
+    private void validar(UsuarioDTO usuarioDTO) {
+        if (usuarioDTO.getNombre() == null || usuarioDTO.getNombre().isBlank()) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, "El nombre es obligatorio");
+        }
+        String email = usuarioDTO.getEmail();
+        if (email == null || !email.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, "Escribe un email valido");
+        }
+        if (usuarioDTO.getTipoUsuario() == null) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, "El tipoUsuario debe ser Turista o Negocio");
+        }
+        List<String> faltantes = ValidadorPassword.reglasIncumplidas(usuarioDTO.getPassword());
+        if (!faltantes.isEmpty()) {
+            throw new ApiException(HttpStatus.BAD_REQUEST,
+                    "La contrasena debe " + String.join(", ", faltantes));
+        }
+        if (usuarioRepository.existsByEmailIgnoreCase(email)) {
+            throw new ApiException(HttpStatus.CONFLICT, "Ya existe una cuenta con ese email");
+        }
     }
 }
