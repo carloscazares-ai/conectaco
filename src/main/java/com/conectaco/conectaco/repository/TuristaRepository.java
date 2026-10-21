@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TuristaRepository extends JpaRepository<TuristaEntity, Integer> {
+    void deleteByIdUsuario(Integer idUsuario);
 }
