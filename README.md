@@ -8,3 +8,21 @@ BASE DE DATOS
 
 ---
 
+ENDPOINTS DE USUARIOS
+
+Al crear un usuario se guarda en `Usuarios` y, según su `tipoUsuario`, también en `Turistas` o en `Negocios`.
+
+| Método | Ruta | Qué hace |
+|---|---|---|
+| POST | `/v1/usuarios` | Crear usuario (nombre, email, password, tipoUsuario) |
+| GET | `/v1/usuarios` | Todos los usuarios |
+| GET | `/v1/usuarios/1` | Un usuario por su id |
+| GET | `/v1/usuarios?nombre=Olivares&tipoUsuario=Turista&email=...` | Buscar (cada filtro es opcional) |
+| PUT | `/v1/usuarios/1` | Reemplazar nombre, email y password (los tres obligatorios) |
+| PATCH | `/v1/usuarios/1` | Cambiar solo los datos que se manden |
+| DELETE | `/v1/usuarios/1` | Borrar el usuario y su registro de Turistas o Negocios |
+| GET | `/v1/turistas` | Todos los turistas |
+| GET | `/v1/negocios` | Todos los negocios |
+
+La contraseña debe tener al menos 8 caracteres, una mayúscula, una minúscula, un número y un símbolo, sin espacios. Los errores regresan `{"error": "mensaje"}` con código 400, 404 o 409.
+
