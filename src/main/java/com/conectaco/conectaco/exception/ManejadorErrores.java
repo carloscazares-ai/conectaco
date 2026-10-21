@@ -1,0 +1,32 @@
+package com.conectaco.conectaco.exception;
+
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.Map;
+
+// Convierte los errores en respuestas JSON del tipo {"error": "mensaje"} en lugar de un error 500
+@RestControllerAdvice
+public class ManejadorErrores {
+
+    @ExceptionHandler(ApiException.class)
+    public ResponseEntity<Map<String, String>> api(ApiException e) {
+        return ResponseEntity.status(e.getStatus()).body(Map.of("error", e.getMessage()));
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, String>> datosRepetidos(DataIntegrityViolationException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(Map.of("error", "Ya existe un registro con esos datos (por ejemplo, el email)"));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Map<String, String>> jsonInvalido(HttpMessageNotReadableException e) {
+        return ResponseEntity.badRequest()
+                .body(Map.of("error", "El JSON no es valido (revisa que tipoUsuario sea Turista o Negocio)"));
+    }
+}
