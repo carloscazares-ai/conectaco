@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.Map;
 
@@ -22,6 +23,13 @@ public class ManejadorErrores {
     public ResponseEntity<Map<String, String>> datosRepetidos(DataIntegrityViolationException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(Map.of("error", "Ya existe un registro con esos datos (por ejemplo, el email)"));
+    }
+
+    // Ej: /v1/usuarios/abc o /v1/usuarios?tipoUsuario=Admin
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Map<String, String>> parametroInvalido(MethodArgumentTypeMismatchException e) {
+        return ResponseEntity.badRequest()
+                .body(Map.of("error", "El valor '" + e.getValue() + "' no es valido para " + e.getName()));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)

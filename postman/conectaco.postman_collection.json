@@ -70,6 +70,77 @@
       ] } }]
     },
     {
+      "name": "CRUD 1 · POST crear Sandra",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/v1/usuarios",
+        "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Sandra Olivares\",\n  \"email\": \"sandra{{$timestamp}}@test.com\",\n  \"password\": \"Sandra#2026\",\n  \"tipoUsuario\": \"Turista\"\n}" }
+      },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Status 200', () => pm.response.to.have.status(200));",
+        "pm.collectionVariables.set('idUsuario', pm.response.json().idUsuario);",
+        "pm.collectionVariables.set('emailSandra', pm.response.json().email);"
+      ] } }]
+    },
+    {
+      "name": "CRUD 2 · GET por id",
+      "request": { "method": "GET", "url": "{{baseUrl}}/v1/usuarios/{{idUsuario}}" },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Status 200', () => pm.response.to.have.status(200));",
+        "pm.test('Es Sandra', () => pm.expect(pm.response.json().nombre).to.eql('Sandra Olivares'));"
+      ] } }]
+    },
+    {
+      "name": "CRUD 3 · GET por nombre y tipo",
+      "request": { "method": "GET", "url": "{{baseUrl}}/v1/usuarios?nombre=olivares&tipoUsuario=Turista" },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Status 200', () => pm.response.to.have.status(200));",
+        "pm.test('Todos se llaman Olivares y son turistas', () => pm.response.json().forEach(u => { pm.expect(u.nombre.toLowerCase()).to.include('olivares'); pm.expect(u.tipoUsuario).to.eql('Turista'); }));"
+      ] } }]
+    },
+    {
+      "name": "CRUD 4 · PATCH cambiar solo el nombre",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/v1/usuarios/{{idUsuario}}",
+        "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Sandra Olivares Ruiz\"\n}" }
+      },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Status 200', () => pm.response.to.have.status(200));",
+        "pm.test('Cambió el nombre', () => pm.expect(pm.response.json().nombre).to.eql('Sandra Olivares Ruiz'));",
+        "pm.test('El email sigue igual', () => pm.expect(pm.response.json().email).to.eql(pm.collectionVariables.get('emailSandra')));"
+      ] } }]
+    },
+    {
+      "name": "CRUD 5 · PUT reemplazar todo",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/v1/usuarios/{{idUsuario}}",
+        "body": { "mode": "raw", "raw": "{\n  \"nombre\": \"Sandra Olivares\",\n  \"email\": \"sandra.nueva{{$timestamp}}@test.com\",\n  \"password\": \"Nueva#2026\"\n}" }
+      },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Status 200', () => pm.response.to.have.status(200));",
+        "pm.test('Cambió el email', () => pm.expect(pm.response.json().email).to.include('sandra.nueva'));"
+      ] } }]
+    },
+    {
+      "name": "CRUD 6 · DELETE borrar",
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/v1/usuarios/{{idUsuario}}" },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Status 204', () => pm.response.to.have.status(204));"
+      ] } }]
+    },
+    {
+      "name": "CRUD 7 · GET ya no existe",
+      "request": { "method": "GET", "url": "{{baseUrl}}/v1/usuarios/{{idUsuario}}" },
+      "event": [{ "listen": "test", "script": { "exec": [
+        "pm.test('Status 404', () => pm.response.to.have.status(404));"
+      ] } }]
+    },
+    {
       "name": "POST contraseña débil (debe fallar)",
       "request": {
         "method": "POST",

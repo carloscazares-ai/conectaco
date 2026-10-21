@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface NegocioRepository extends JpaRepository<NegocioEntity, Integer> {
+    void deleteByIdUsuario(Integer idUsuario);
 }
